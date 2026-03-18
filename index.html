@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olifrans | Concessionária Premium & Chatbot</title>
+    <style>
+        /* --- CONFIGURAÇÕES GERAIS --- */
+        :root {
+            --primary: #c0392b;
+            --secondary: #2c3e50;
+            --dark: #121212;
+            --light: #f4f4f4;
+            --success: #25d366;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- HEADER & NAVBAR --- */
+        header {
+            background: rgba(0, 0, 0, 0.95);
+            height: 80px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            height: 3px;
+            width: 25px;
+            background: white;
+            margin: 4px;
+        }
+
+        /* --- HERO SLIDER --- */
+        .hero {
+            height: 80vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            display: none;
+            animation: fade 1s ease;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #a93226;
+            transform: translateY(-3px);
+        }
+
+        /* --- FILTROS E BUSCA --- */
+        .filter-section {
+            padding: 4rem 0 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 90%;
+        }
+
+        .filter-container {
+            background: var(--secondary);
+            padding: 20px;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            color: #bbb;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+
+        /* --- CATALOGO --- */
+        .catalog {
+            padding: 2rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 90%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid #333;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            border-color: var(--primary);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-price {
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* --- CHATBOT WHATSAPP --- */
+        .whatsapp-chat {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 3000;
+        }
+
+        #chat-btn {
+            background: var(--success);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        #chat-btn:hover {
+            transform: scale(1.1);
+        }
+
+        #chat-window {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 320px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            color: #333;
+        }
+
+        .chat-header {
+            background: #075e54;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-body {
+            height: 300px;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #e5ddd5;
+        }
+
+        .message {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            max-width: 85%;
+            position: relative;
+        }
+
+        .bot-msg {
+            background: #fff;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+        }
+
+        .user-msg {
+            background: #dcf8c6;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+
+        .chat-footer {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 5px;
+            background: #f0f0f0;
+        }
+
+        .chat-footer input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .chat-footer button {
+            background: #075e54;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 4000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #1e1e1e;
+            width: 100%;
+            max-width: 800px;
+            border-radius: 15px;
+            position: relative;
+            padding: 30px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        /* --- CONTATO & SOBRE --- */
+        section {
+            padding: 5rem 0;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .section-title span {
+            color: var(--primary);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #222;
+            color: white;
+        }
+
+        footer {
+            background: #000;
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid #222;
+            margin-top: 4rem;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0.5;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* --- RESPONSIVIDADE --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: #000;
+                padding: 20px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">DRIVE<span>ELITE</span></div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#veiculos">Estoque</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </div>
+        </nav>
+    </header>
+
+    <section id="home" class="hero" style="width: 100%; max-width: 100%; padding: 0;">
+        <div class="slide active"
+            style="background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1920')">
+        </div>
+        <div class="slide"
+            style="background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1920')">
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Excelência em cada detalhe</h1>
+            <p>Sua próxima conquista premium está esperando por você na DriveElite.</p>
+            <br>
+            <a href="#veiculos" class="btn btn-primary">Ver Catálogo</a>
+        </div>
+    </section>
+
+    <div class="filter-section" id="veiculos">
+        <h2 class="section-title">Estoque <span>Exclusivo</span></h2>
+        <div class="filter-container">
+            <div class="filter-group">
+                <label>Pesquisar Modelo</label>
+                <input type="text" id="searchName" placeholder="Ex: Civic..." onkeyup="filterCars()">
+            </div>
+            <div class="filter-group">
+                <label>Ano Mínimo</label>
+                <select id="filterYear" onchange="filterCars()">
+                    <option value="">Todos</option>
+                    <option value="2018">2018+</option>
+                    <option value="2021">2021+</option>
+                    <option value="2023">2023+</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Preço Máximo</label>
+                <input type="number" id="filterPrice" placeholder="R$" onkeyup="filterCars()">
+            </div>
+        </div>
+    </div>
+
+    <div class="catalog" id="carCatalog"></div>
+
+    <section id="sobre">
+        <h2 class="section-title">Nossa <span>História</span></h2>
+        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <p>Com mais de 15 anos no mercado, a DriveElite não apenas vende carros; realizamos sonhos com segurança e
+                transparência. Somos especialistas em veículos premium e seminovos de alta qualidade.</p>
+        </div>
+    </section>
+
+    <section id="contato">
+        <h2 class="section-title">Fale <span>Conosco</span></h2>
+        <div class="contact-grid">
+            <form id="purchaseForm" onsubmit="handleForm(event)">
+                <div class="form-group"><input type="text" placeholder="Seu Nome" required></div>
+                <div class="form-group"><input type="email" placeholder="Seu E-mail" required></div>
+                <div class="form-group"><input type="text" id="interestVehicle" placeholder="Veículo de Interesse">
+                </div>
+                <div class="form-group"><textarea rows="4" placeholder="Sua Mensagem"></textarea></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Enviar Proposta</button>
+            </form>
+            <div>
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.1974753066145!2d-46.658824!3d-23.561284!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c8da0aa315%3A0xd59f9431f2c9776a!2sAv.%20Paulista%2C%20S%C3%A3o%20Paulo%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1620000000000!5m2!1spt-BR!2sbr"
+                    style="width:100%; height:300px; border-radius:10px; border:0;"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <div class="whatsapp-chat">
+        <div id="chat-window">
+            <div class="chat-header">
+                <span>Atendimento DriveElite</span>
+                <span style="cursor:pointer" onclick="toggleChat()">×</span>
+            </div>
+            <div class="chat-body" id="chatContent">
+                <div class="message bot-msg">Olá! Sou o assistente DriveElite. Como posso te chamar?</div>
+            </div>
+            <div class="chat-footer">
+                <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
+                <button onclick="sendBotMsg()">➤</button>
+            </div>
+        </div>
+        <div id="chat-btn" onclick="toggleChat()">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="30" alt="WA">
+        </div>
+    </div>
+
+    <div id="modalDetails" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">×</span>
+            <div id="modalData"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 DriveElite Automóveis - Premium Selection</p>
+    </footer>
+
+    <script>
+        // --- DADOS DOS VEÍCULOS ---
+        const vehicles = [
+            { id: 1, name: "Honda Civic Sedan", year: 2022, price: 155000, km: "12.000", brand: "Honda", img: "https://images.unsplash.com/photo-1606148383350-0834316a75f1?auto=format&fit=crop&w=600&q=80", desc: "Teto solar, revisado, estado de novo." },
+            { id: 2, name: "Toyota Corolla Altis", year: 2023, price: 178000, km: "5.000", brand: "Toyota", img: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=600&q=80", desc: "Híbrido, pacote premium de tecnologia." },
+            { id: 3, name: "Chevrolet Onix Turbo", year: 2021, price: 82000, km: "30.000", brand: "Chevrolet", img: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=600&q=80", desc: "Econômico, MyLink e sensor de estacionamento." },
+            { id: 4, name: "Hyundai HB20 Platinum", year: 2023, price: 95000, km: "0", brand: "Hyundai", img: "https://images.unsplash.com/photo-1620612471131-775f0a027964?auto=format&fit=crop&w=600&q=80", desc: "Zero KM, pronta entrega." },
+            { id: 5, name: "Jeep Compass Limited", year: 2021, price: 165000, km: "45.000", brand: "Jeep", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=600&q=80", desc: "Diesel 4x4, som Beats e bancos em couro." },
+            { id: 6, name: "Toyota Hilux SRX", year: 2022, price: 290000, km: "22.000", brand: "Toyota", img: "https://images.unsplash.com/photo-1620023646545-2007419f7125?auto=format&fit=crop&w=600&q=80", desc: "Picape robusta com o maior valor de revenda." },
+            { id: 7, name: "BMW 320i M-Sport", year: 2023, price: 340000, km: "2.500", brand: "BMW", img: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=600&q=80", desc: "Desempenho esportivo e luxo absoluto." },
+            { id: 8, name: "VW Gol Last Edition", year: 2023, price: 110000, km: "0", brand: "VW", img: "https://images.unsplash.com/photo-1602491291176-66380a1f0a9f?auto=format&fit=crop&w=600&q=80", desc: "Edição limitada de colecionador." }
+        ];
+
+        // --- LÓGICA DE EXIBIÇÃO ---
+        function displayCars(data) {
+            const container = document.getElementById('carCatalog');
+            container.innerHTML = data.length ? '' : '<p>Nenhum veículo encontrado.</p>';
+            data.forEach(car => {
+                container.innerHTML += `
+                    <div class="card">
+                        <img src="${car.img}" class="card-img">
+                        <div class="card-body">
+                            <h3>${car.name}</h3>
+                            <p>${car.brand} | ${car.year}</p>
+                            <p class="card-price">R$ ${car.price.toLocaleString('pt-BR')}</p>
+                            <div class="card-actions">
+                                <button class="btn btn-primary" style="font-size:0.7rem" onclick="openDetails(${car.id})">VER MAIS</button>
+                                <button class="btn" style="background:#555; color:white; font-size:0.7rem" onclick="buyCar('${car.name}')">INTERESSE</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- FILTROS ---
+        function filterCars() {
+            const name = document.getElementById('searchName').value.toLowerCase();
+            const year = document.getElementById('filterYear').value;
+            const price = document.getElementById('filterPrice').value;
+
+            const filtered = vehicles.filter(car => {
+                return car.name.toLowerCase().includes(name) &&
+                    (!year || car.year >= year) &&
+                    (!price || car.price <= price);
+            });
+            displayCars(filtered);
+        }
+
+        // --- CHATBOT ---
+        let chatStep = 1;
+        let userData = { nome: '', carro: '' };
+
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function sendBotMsg() {
+            const input = document.getElementById('chatInput');
+            const val = input.value.trim();
+            if (!val) return;
+
+            addMsg(val, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                if (chatStep === 1) {
+                    userData.nome = val;
+                    addMsg(`Prazer ${val}! Qual carro do site você mais gostou?`, 'bot');
+                    chatStep = 2;
+                } else {
+                    userData.carro = val;
+                    addMsg(`Excelente escolha! Vou te levar agora para o WhatsApp para falar com um consultor.`, 'bot');
+                    setTimeout(() => {
+                        const zapUrl = `https://wa.me/5511939592955?text=${encodeURIComponent('Olá, meu nome é ' + userData.nome + '. Tenho interesse no veículo: ' + userData.carro)}`;
+                        window.open(zapUrl, '_blank');
+                    }, 1500);
+                }
+            }, 800);
+        }
+
+        function addMsg(text, type) {
+            const cont = document.getElementById('chatContent');
+            cont.innerHTML += `<div class="message ${type}-msg">${text}</div>`;
+            cont.scrollTop = cont.scrollHeight;
+        }
+
+        // --- UI GERAL ---
+        function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
+
+        function openDetails(id) {
+            const car = vehicles.find(c => c.id === id);
+            document.getElementById('modalData').innerHTML = `
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap:20px;">
+                    <img src="${car.img}" style="width:100%; border-radius:10px;">
+                    <div>
+                        <h2>${car.name}</h2>
+                        <p class="card-price">R$ ${car.price.toLocaleString('pt-BR')}</p>
+                        <p><strong>Ano:</strong> ${car.year} | <strong>KM:</strong> ${car.km}</p>
+                        <p style="margin-top:20px; color:#ccc;">${car.desc}</p>
+                        <button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="buyCar('${car.name}')">SOLICITAR ATENDIMENTO</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modalDetails').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('modalDetails').style.display = 'none'; }
+
+        function buyCar(name) {
+            document.getElementById('interestVehicle').value = name;
+            window.location.href = "#contato";
+            closeModal();
+        }
+
+        function handleForm(e) {
+            e.preventDefault();
+            alert("Sucesso! Sua proposta foi registrada. O consultor entrará em contato.");
+            e.target.reset();
+        }
+
+        // SLIDER AUTO
+        let cur = 0;
+        setInterval(() => {
+            const slides = document.querySelectorAll('.slide');
+            slides[cur].classList.remove('active');
+            cur = (cur + 1) % slides.length;
+            slides[cur].classList.add('active');
+        }, 4000);
+
+        window.onload = () => displayCars(vehicles);
+        window.onclick = (e) => { if (e.target.className === 'modal') closeModal(); }
+    </script>
+</body>
+
+</html>
